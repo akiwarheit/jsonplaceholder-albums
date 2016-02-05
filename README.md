@@ -12,3 +12,7 @@ of the user the album belongs to.
 by http://jsonplaceholder.typicode.com/photos as thumbnails.
 
 -When a thumbnail is clicked, the full sized photo should be displayed.
+
+![device screenshot](https://github.com/akiwarheit/jsonplaceholder-albums/blob/master/device-2016-02-05-155217.png)
+![device screenshot 2](https://github.com/akiwarheit/jsonplaceholder-albums/blob/master/device-2016-02-05-155039.png)
+![device screenshot 3](https://github.com/akiwarheit/jsonplaceholder-albums/blob/master/device-2016-02-05-155057.png)
