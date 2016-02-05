@@ -29,6 +29,8 @@ public class AlbumViewModel extends ViewModel<Album> {
     @Bind(R.id.user)
     TextView userTextView;
 
+    String username = "Retrieving username...";
+
     public AlbumViewModel(Album model) {
         super(model);
     }
@@ -50,13 +52,14 @@ public class AlbumViewModel extends ViewModel<Album> {
             titleTextView.setText(getObject().getTitle());
         }
 
-        userTextView.setText("retrieving username...");
+        userTextView.setText(username);
         UsersAPI usersAPI = APIClient.getInstance(inflater.getContext()).getAPI(UsersAPI.class);
         usersAPI.getUser(getObject().getUserId(), new Callback<User>() {
             @Override
             public void success(User user, Response response) {
+                username = user.getName();
                 if (userTextView != null) {
-                    userTextView.setText(user.getName());
+                    userTextView.setText(username);
                 }
             }
 

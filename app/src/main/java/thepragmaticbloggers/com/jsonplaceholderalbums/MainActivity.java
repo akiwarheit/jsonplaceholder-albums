@@ -1,7 +1,10 @@
 package thepragmaticbloggers.com.jsonplaceholderalbums;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -41,6 +44,16 @@ public class MainActivity extends AppCompatActivity {
         // view binding
         ButterKnife.bind(this);
         albumListView.setAdapter(viewableListAdapter);
+
+        albumListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(MainActivity.this, AlbumActivity.class);
+                intent.putExtra("album", albumViewModels.get(position).getObject());
+                startActivity(intent);
+            }
+        });
+
         ProgressDialogFragment.showLoadingProgress(getSupportFragmentManager());
         AlbumsAPI albumsAPI = APIClient.getInstance(this).getAPI(AlbumsAPI.class);
         albumsAPI.getAlbums(new Callback<List<Album>>() {
