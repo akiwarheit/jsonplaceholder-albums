@@ -3,7 +3,7 @@ Made by Kevin Jude Deloria. Feb. 5, 2016
 
 Will run on Jelly Bean (4.1) and above, supporting 92% of all devices!
 
-- Instructions -
+# Instructions -
 
 Visit: http://jsonplaceholder.typicode.com/ and write an (Android, iOS, or AngularJS) application that:
 
