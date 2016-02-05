@@ -7,8 +7,8 @@
     <GridView
         android:id="@+id/album_grid"
         android:layout_width="match_parent"
-        android:stretchMode="columnWidth"
         android:layout_height="match_parent"
-        android:numColumns="3" />
+        android:numColumns="3"
+        android:stretchMode="columnWidth" />
 
 </LinearLayout>
