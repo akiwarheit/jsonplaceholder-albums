@@ -52,15 +52,12 @@ public class AlbumViewModel extends ViewModel<Album> {
             titleTextView.setText(getObject().getTitle());
         }
 
-        userTextView.setText(username);
+        userTextView.setText("Retrieving username");
         UsersAPI usersAPI = APIClient.getInstance(inflater.getContext()).getAPI(UsersAPI.class);
         usersAPI.getUser(getObject().getUserId(), new Callback<User>() {
             @Override
             public void success(User user, Response response) {
-                username = user.getName();
-                if (userTextView != null) {
-                    userTextView.setText(username);
-                }
+                userTextView.setText(user.getName());
             }
 
             @Override
