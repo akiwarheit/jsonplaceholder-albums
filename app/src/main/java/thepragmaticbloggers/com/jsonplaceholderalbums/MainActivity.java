@@ -19,7 +19,9 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import thepragmaticbloggers.com.jsonplaceholderalbums.api.AlbumsAPI;
+import thepragmaticbloggers.com.jsonplaceholderalbums.api.UsersAPI;
 import thepragmaticbloggers.com.jsonplaceholderalbums.model.Album;
+import thepragmaticbloggers.com.jsonplaceholderalbums.model.User;
 import thepragmaticbloggers.com.jsonplaceholderalbums.viewmodel.AlbumViewModel;
 import thepragmaticbloggers.com.jsonplaceholderalbums.web.APIClient;
 import thepragmaticbloggers.com.jsonplaceholderalbums.widget.ProgressDialogFragment;
@@ -55,27 +57,48 @@ public class MainActivity extends AppCompatActivity {
         });
 
         ProgressDialogFragment.showLoadingProgress(getSupportFragmentManager());
-        AlbumsAPI albumsAPI = APIClient.getInstance(this).getAPI(AlbumsAPI.class);
-        albumsAPI.getAlbums(new Callback<List<Album>>() {
+        final AlbumsAPI albumsAPI = APIClient.getInstance(this).getAPI(AlbumsAPI.class);
+
+
+        UsersAPI usersAPI = APIClient.getInstance(this).getAPI(UsersAPI.class);
+        usersAPI.getUsers(new Callback<List<User>>() {
             @Override
-            public void success(List<Album> alba, Response response) {
-                albumViewModels.clear();
-                for (Album album : alba) {
-                    albumViewModels.add(new AlbumViewModel(album));
-                }
-                viewableListAdapter.notifyDataSetChanged();
-                try {
-                    ProgressDialogFragment.dismissLoadingProgress(getSupportFragmentManager());
-                } catch (Exception ex) {
-                    Toast.makeText(MainActivity.this, "Something went wrong", Toast.LENGTH_LONG).show();
-                }
+            public void success(List<User> users, Response response) {
+                AlbumViewModel.users.addAll(users);
+
+                albumsAPI.getAlbums(new Callback<List<Album>>() {
+                    @Override
+                    public void success(List<Album> alba, Response response) {
+                        albumViewModels.clear();
+                        for (Album album : alba) {
+                            AlbumViewModel albumViewModel = new AlbumViewModel(album);
+                            albumViewModels.add(albumViewModel);
+                        }
+                        viewableListAdapter.notifyDataSetChanged();
+                        try {
+                            ProgressDialogFragment.dismissLoadingProgress(getSupportFragmentManager());
+                        } catch (Exception ex) {
+                            Toast.makeText(MainActivity.this, "Something went wrong", Toast.LENGTH_LONG).show();
+                        }
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                        error.printStackTrace();
+                        Toast.makeText(MainActivity.this, error.getMessage(), Toast.LENGTH_LONG).show();
+                        ProgressDialogFragment.dismissLoadingProgress(getSupportFragmentManager());
+                    }
+                });
             }
 
             @Override
             public void failure(RetrofitError error) {
                 error.printStackTrace();
                 Toast.makeText(MainActivity.this, error.getMessage(), Toast.LENGTH_LONG).show();
+                ProgressDialogFragment.dismissLoadingProgress(getSupportFragmentManager());
             }
         });
+
+
     }
 }

@@ -7,6 +7,9 @@ import android.widget.TextView;
 
 import com.keeboi.theplan.base.ViewModel;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import retrofit.Callback;
@@ -29,7 +32,7 @@ public class AlbumViewModel extends ViewModel<Album> {
     @Bind(R.id.user)
     TextView userTextView;
 
-    String username = "Retrieving username...";
+    public static final List<User> users = new ArrayList<User>();
 
     public AlbumViewModel(Album model) {
         super(model);
@@ -52,19 +55,33 @@ public class AlbumViewModel extends ViewModel<Album> {
             titleTextView.setText(getObject().getTitle());
         }
 
-        userTextView.setText("Retrieving username");
+
         UsersAPI usersAPI = APIClient.getInstance(inflater.getContext()).getAPI(UsersAPI.class);
-        usersAPI.getUser(getObject().getUserId(), new Callback<User>() {
-            @Override
-            public void success(User user, Response response) {
-                userTextView.setText(user.getName());
-            }
+        userTextView.setText("Retrieving username");
+        if (users.isEmpty()) {
+            usersAPI.getUsers(new Callback<List<User>>() {
+                @Override
+                public void success(List<User> users, Response response) {
+                    AlbumViewModel.this.users.addAll(users);
+                    for (User user : users) {
+                        if (user.getId().intValue() == getObject().getUserId().intValue()) {
+                            userTextView.setText(user.getName());
+                        }
+                    }
+                }
 
-            @Override
-            public void failure(RetrofitError error) {
+                @Override
+                public void failure(RetrofitError error) {
 
+                }
+            });
+        } else {
+            for (User user : users) {
+                if (user.getId().intValue() == getObject().getUserId().intValue()) {
+                    userTextView.setText(user.getName());
+                }
             }
-        });
+        }
 
         return view;
     }
