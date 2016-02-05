@@ -1,7 +1,10 @@
 package thepragmaticbloggers.com.jsonplaceholderalbums;
 
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.Toast;
 
@@ -43,6 +46,12 @@ public class AlbumActivity extends AppCompatActivity {
         Album album = (Album) getIntent().getSerializableExtra("album");
         viewableListAdapter = new ViewableListAdapter(this, photoViewModels);
         grid.setAdapter(viewableListAdapter);
+        grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                showPhoto(photoViewModels.get(position).getObject());
+            }
+        });
 
         AlbumsAPI albumsAPI = APIClient.getInstance(this).getAPI(AlbumsAPI.class);
         ProgressDialogFragment.showLoadingProgress(getSupportFragmentManager());
@@ -69,5 +78,18 @@ public class AlbumActivity extends AppCompatActivity {
                 Toast.makeText(AlbumActivity.this, error.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
+    }
+
+    /**
+     * Display the photo selected by the user in a dialog fragment
+     *
+     * @param photo
+     */
+    private void showPhoto(Photo photo) {
+        DialogFragment photoFragment = new PhotoFragment();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("photo", photo);
+        photoFragment.setArguments(bundle);
+        photoFragment.show(getSupportFragmentManager(), "dialog");
     }
 }
